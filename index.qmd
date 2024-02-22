@@ -1,0 +1,7 @@
+---
+title: "Joseph John Cox"
+---
+
+# Bio
+
+I'm working on Operations Research and Data Science at [Hadrian](hadrian.co), where I also assist with Infrastructure, CloudOps, DevOps, and Data Infrastructure.
