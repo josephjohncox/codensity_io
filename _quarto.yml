@@ -4,14 +4,22 @@ project:
 
 website:
   title: "Joseph John Cox"
+  site-url: https://codensity.io
+  description: Operations Research and Manufacturing
+  open-graph:
+    locale: en_US
+  twitter-card:
+    creator: "@josephjohncox"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - projects.qmd
+  page-footer:
+    left: "© Copyright 2024 Joseph John Cox. Except where otherwise noted, all text and images licensed CC-BY-NC 4.0."
 
 format:
   html:
-    theme: cosmo
+    theme: [sandstone, _variables.scss]
     css: styles.css
     toc: true
