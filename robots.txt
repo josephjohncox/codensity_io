@@ -1,1 +1,1 @@
-Sitemap: https://josephjohncox.github.io/codensity_io/sitemap.xml
+Sitemap: https://codensity.io/sitemap.xml
