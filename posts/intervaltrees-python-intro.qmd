@@ -201,3 +201,182 @@ Curiously, insertion is a simpler operation than deletion. We can insert an inte
         # Insert the merged interval
         self.root = self._insert(self.root, IntervalNode(start, end))
 ```
+
+### Operations and Their Performance
+
+#### 1. **Insertion (`insert_interval`)**
+
+**Functionality**:
+
+- Inserts a new interval `[start, end)` into the tree.
+- Merges overlapping or adjacent intervals to maintain non-overlapping intervals.
+
+**Performance Analysis**:
+
+- **Overlap Deletion** (`_delete_overlaps`):
+  - Recursively traverses the tree to find and remove intervals that overlap with the new interval.
+  - Time Complexity: O(log n + k), where:
+    - `n` is the number of intervals in the tree.
+    - `k` is the number of overlapping intervals.
+  - In the worst case, if the new interval overlaps with all existing intervals, `k` could be `n`, leading to O(n) time.
+
+- **Insertion into AVL Tree** (`_insert`):
+  - Standard AVL tree insertion.
+  - Time Complexity: O(log n).
+
+- **Rebalancing** (`_rebalance`):
+  - After insertion, the tree may need to rebalance.
+  - Rotations take constant time.
+  - Since AVL trees require at most O(log n) rotations, the rebalancing process is O(log n).
+
+- **Overall Time Complexity**:
+  - Best Case: O(log n) (no overlaps).
+  - Worst Case: O(n) (overlaps with all intervals).
+
+**Space Complexity**:
+
+- Additional space for recursion stack: O(log n).
+- Space for storing overlapping intervals: O(k).
+
+#### 2. **Deletion (`delete_interval`)**
+
+**Functionality**:
+
+- Deletes an interval `[start, end)` from the tree (scheduling the interval).
+- May split existing intervals if the interval to delete is in the middle of an available interval.
+
+**Performance Analysis**:
+
+- **Overlap Deletion** (`_delete_overlaps`):
+  - Similar to insertion, it finds and removes overlapping intervals.
+  - Time Complexity: O(log n + k).
+
+- **Splitting Intervals**:
+  - For each overlapping interval, it may insert up to two new intervals (left and right parts that remain available).
+  - Each insertion is O(log n), and up to `k` intervals may be inserted.
+  - Time Complexity: O(k log n).
+
+- **Rebalancing**:
+  - Occurs after each insertion/deletion.
+  - O(log n) per operation.
+
+- **Overall Time Complexity**:
+  - O((k + 1) log n), since overlap deletion and re-insertion of split intervals dominate.
+
+**Space Complexity**:
+
+- O(log n) for recursion stack.
+- O(k) for storing overlapping intervals.
+
+#### 3. **Get Total Available Length (`get_total_available_length`)**
+
+**Functionality**:
+
+- Returns the total available schedulable length in the tree.
+
+**Performance Analysis**:
+
+- **Time Complexity**:
+  - O(1), as it directly accesses `total_length` of the root node.
+
+**Space Complexity**:
+
+- O(1).
+
+#### 4. **Tree Traversal and Printing (`print_tree`, `_print_tree`)**
+
+**Functionality**:
+
+- Prints the tree structure and intervals for visualization.
+
+**Performance Analysis**:
+
+- **Time Complexity**:
+  - O(n), as it needs to visit each node once.
+
+**Space Complexity**:
+
+- O(log n) for recursion stack in a balanced tree.
+
+#### 5. **Update Statistics (`update_stats`)**
+
+**Functionality**:
+
+- Updates `length`, `total_length`, and `height` of a node.
+- Called during insertion and deletion to maintain correct subtree statistics.
+
+**Performance Analysis**:
+
+- **Time Complexity**:
+  - O(1) per node.
+- Since it's called during tree traversal, it doesn't add extra time complexity beyond traversal.
+
+#### 6. **Balancing Operations (`_rotate_left`, `_rotate_right`)**
+
+**Functionality**:
+
+- Rotations to rebalance the tree after insertions or deletions.
+
+**Performance Analysis**:
+
+- **Time Complexity**:
+  - O(1) per rotation.
+- AVL trees require at most O(log n) rotations per insertion or deletion.
+
+### Overall Performance Summary
+
+- **Insertion and Deletion**:
+  - Best Case: O(log n) when there are no overlapping intervals.
+  - Worst Case: O(n), when the interval overlaps with all existing intervals.
+  - Average Case: O(log n + k), where `k` is small compared to `n`.
+
+- **Lookup Operations**:
+  - Getting total available length: O(1).
+  - Finding intervals: O(log n).
+
+- **Space Complexity**:
+  - O(n), proportional to the number of intervals stored.
+  - Additional O(log n) for recursion stack during operations.
+
+### Potential Performance Bottlenecks
+
+- **Overlapping Intervals**:
+  - The performance degrades when an operation involves a large number of overlapping intervals.
+  - In extreme cases (e.g., inserting an interval that overlaps all existing intervals), operations can become O(n).
+
+- **Interval Merging and Splitting**:
+  - Merging and splitting intervals during insertions and deletions can lead to multiple insertions and deletions, each requiring tree rebalancing.
+
+### Optimizations and Improvements
+
+1. **Segment Trees**:
+   - If overlapping intervals are common, consider using a segment tree or an interval tree that is specifically optimized for overlapping intervals.
+   - Segment trees can handle range queries and updates in O(log n) time, even with overlapping intervals.
+
+2. **Interval Trees (Augmented BSTs)**:
+   - Use a self-balancing binary search tree augmented with interval-specific information (like max end in subtree).
+   - This allows for efficient querying of all intervals that overlap with a given interval.
+
+3. **Lazy Updates**:
+   - Implement lazy propagation for bulk updates or deletions.
+   - Useful when performing multiple operations over large intervals.
+
+4. **Batch Processing**:
+   - If multiple intervals are to be inserted or deleted at once, batch them to reduce the overhead of rebalancing.
+
+5. **Caching and Memoization**:
+   - Cache results of frequent queries to avoid recomputation.
+   - Since the tree maintains total lengths, caching can be effective for repeated total length queries.
+
+### Comparative Analysis with Other Data Structures
+
+- **Red-Black Trees**:
+  - Similar performance to AVL trees but may have slightly different balancing characteristics.
+  - AVL trees are more strictly balanced, potentially providing faster lookups.
+
+- **Augmented Trees**:
+  - By augmenting the tree with additional metadata, specific queries (like finding all overlapping intervals) can be optimized.
+
+- **Skip Lists**:
+  - Probabilistic data structures that offer O(log n) average time for insertions and deletions.
+  - May not provide the same guarantees as AVL trees in the worst case.

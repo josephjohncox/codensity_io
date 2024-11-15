@@ -6,6 +6,7 @@ website:
   title: "Joseph John Cox"
   site-url: https://codensity.io
   description: Operations Research and Manufacturing
+  draft-mode: unlinked
   open-graph:
     locale: en_US
   twitter-card:
