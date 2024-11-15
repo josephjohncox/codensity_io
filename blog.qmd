@@ -1,0 +1,12 @@
+---
+title: "Articles"
+listing:
+  categories: true
+  contents: posts
+  sort: "date desc"
+  type: "default"
+  sort-ui: false
+  filter-ui: false
+  feed:
+    categories: [news, posts]
+---

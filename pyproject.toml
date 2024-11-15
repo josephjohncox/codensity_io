@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "codensity-io"
+version = "0.1.0"
+description = ""
+authors = ["Joseph Cox <joseph@codensity.io>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+jupyter = "^1.1.1"
+quarto = "^0.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+radian = "^0.6.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

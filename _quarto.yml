@@ -14,9 +14,11 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: blog.qmd
+        text: Blog
       - projects.qmd
   page-footer:
-    left: "© Copyright 2024 Joseph John Cox. Except where otherwise noted, all text and images licensed CC-BY-NC 4.0."
+    left: "© Copyright 2024 Joseph John Cox. All rights reserved."
 
 format:
   html:

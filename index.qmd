@@ -21,7 +21,9 @@ comments: false
 
 # Bio
 
-I'm working on Operations Research and Data Science at [Hadrian](hadrian.co), where I also assist with Infrastructure, CloudOps, DevOps, and Data Infrastructure.
+I'm working on Operations Research and Data Science at [Hadrian](hadrian.co), where I also assist with Infrastructure, CloudOps, DevOps, and Data Infrastructure. My focus is on optimization, scheduling, and constraint programming problems. I'm particularly interested in applying category theory, optimization theory, and reinforcement learning to industrial optimization problems. I have experience with large-scale manufacturing optimization, supply chain optimization, and production scheduling.
+
+Previously, I worked in semiconductor design and manufacturing, developing embedded systems, EDA tools, and compilers for automation and testing. I also worked in the supply chain space, focusing on optimization and data science for large-scale logistics problems. My background is in mathematics and physics, with deep experience in abstract algebra, distributed systems, signal processing, stochastic processes, and algorithms.
 :::
 
 <link rel="me" href="https://x.com/josephjohncox">

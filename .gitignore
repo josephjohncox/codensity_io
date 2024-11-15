@@ -1,3 +1,8 @@
 /.quarto/
 /_site/
 /docs/
+posts/tikz*.*
+posts/tikz-cache/
+posts/**/mediabag/ 
+_freeze/
+_extensions/

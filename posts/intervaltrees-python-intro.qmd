@@ -1,0 +1,203 @@
+---
+title: "Interval Trees"
+description: "Exploring Interval Trees in Python: Deletion, Splitting, and Earliest Interval Queries"
+author: "Joseph Cox"
+date: "2024-11-13"
+categories: [posts, python, algorithms, scheduling, operations research, data structures]
+draft: true
+filters:
+  - diagram
+diagram:
+  cache: true
+  engine:
+    tikz:
+      execpath: lualatex
+      header-includes:
+        - '\usepackage{amsmath}'
+        - '\usepackage{amsfonts}'
+        - '\usetikzlibrary{arrows, shapes, fit}'
+---
+
+# Introduction
+
+Interval trees are an interesting data structure that provides efficient management and querying of intervals, which are particularly useful in scheduling, computational geometry, and time-based applications. 
+
+Use cases include:
+
+- Scheduling: Finding available time slots and detecting conflicts
+
+- Resource Management: Tracking continuous blocks of memory or bandwidth  
+
+- Genomics: Analyzing overlapping DNA sequences
+
+- Computational Geometry: Detecting line segment intersections
+
+- Geographic Systems: Managing map layers and spatial queries
+
+- Database Optimization: Indexing temporal data ranges
+
+- Cache Management: Optimizing memory access patterns
+
+# Using an Extended Number Line
+
+For some applications, we can extend the number line to include infinite values to simplify the logic of interval tree operations. This allows us to represent intervals like (-∞, a] and [b, ∞) elegantly. Additionally, distinguishing between closed [a,b] and open (a,b) intervals, along with representing empty intervals ∅, provides mathematical rigor. However, we will focus on a simpler approach using finite, closed intervals for clarity.
+
+The [portion](https://pypi.org/project/portion/) library provides these extended interval capabilities if needed, but its additional complexity isn't necessary for our core interval tree implementation.
+
+# The Easy Way
+
+The code for this section is available on [GitHub](https://github.com/josephjohncox/Tree-Mendous/tree/main/basic/avl.py).
+
+## Setting Up an Interval Tree in Python
+
+For this tutorial, we will implement an interval tree using an AVL tree as our foundation. An AVL tree is a self-balancing binary search tree that maintains a height balance factor, ensuring O(log n) operations.
+
+Let's examine the core building block - the AVL tree node that we'll extend to handle intervals.
+
+
+```python
+class IntervalNode:
+    def __init__(self, start: float, end: float):
+        self.start = start
+        self.end = end
+        self.length = end - start
+        self.total_length = self.length
+
+        self.left = None
+        self.right = None
+        self.height = 1  # For AVL tree balancing
+
+    def update_stats(self):
+        pass
+
+    @staticmethod
+    def get_height(node: IntervalNode | None) -> int:
+        pass
+```
+
+The structure here is similar to any standard BST node, with the addition of the `height` attribute, a cached `length` attribute, a cached `total_length` attribute, and the `update_stats` method.
+
+We maintain these length attributes to have slightly faster queries of the length of the intervals in the subtree.
+
+### Updating Stats
+
+The `update_stats` method is a good candidate for a lazy update, as we can traverse the tree and update the length and height attributes of the nodes as we traverse.
+
+This method allows us to maintain the length and height attributes in the nodes as we insert and delete intervals, only updating the affected nodes and their ancestors as needed.
+
+```python
+    def update_stats(self):
+        self.length = self.end - self.start
+        self.total_length = self.length
+        if self.left:
+            self.total_length += self.left.total_length
+        if self.right:
+            self.total_length += self.right.total_length
+        self.height = 1 + max(self.get_height(self.left), self.get_height(self.right))
+```
+
+### Getting the Height
+
+The `get_height` method is a static accessor that returns the height of a node. It handles the base case of empty subtrees by returning 0 for `None` nodes, establishing a natural recursion. 
+
+```python
+    @staticmethod
+    def get_height(node: IntervalNode | None) -> int:
+        return node.height if node else 0
+```
+
+## The Interval Tree Class
+
+The interval tree class is a wrapper around the AVL tree node class, providing a root node and methods for inserting, deleting, and querying intervals.
+
+```python
+class IntervalTree:
+    def __init__(self):
+        self.root = None
+```
+
+We will implement the insertion, deletion, and splitting operations in the next section. However, we will elide the details of the AVL tree balancing logic for now.
+
+## Invariants
+
+The interval tree maintains the following invariants:
+
+1. No two intervals in the tree overlap
+2. The tree is balanced, ensuring O(log n) operations
+
+## Deletion and Splitting Operations
+
+The `_delete_overlaps` method is a key operation for maintaining disjoint intervals in our tree. Given an interval `[start, end]`, it removes all intervals that overlap with it, collecting them in a list for potential later use.
+
+```python
+    def _delete_overlaps(self, node: Optional[IntervalNode], start: int, end: int, 
+                        overlapping_nodes: List[IntervalNode]) -> Optional[IntervalNode]:
+        if not node:
+            return None
+
+        # If the current node interval is completely after the interval to delete, go left
+        if end <= node.start:
+            node.left = self._delete_overlaps(node.left, start, end, overlapping_nodes)
+        # If the current node interval is completely before the interval to delete, go right
+        elif start >= node.end:
+            node.right = self._delete_overlaps(node.right, start, end, overlapping_nodes)
+        else:
+            # Current node overlaps with [start, end], remove it and collect it
+            overlapping_nodes.append(node)
+            # Delete this node and replace it with its children
+            if node.left and node.right:
+                # Node with two children: Get the inorder successor (smallest in the right subtree)
+                successor = self._get_min(node.right)
+                # Copy the successor's content to this node
+                node.start = successor.start
+                node.end = successor.end
+                # Delete the successor
+                node.right = self._delete_overlaps(node.right, successor.start, successor.end, overlapping_nodes)
+            elif node.left:
+                node = node.left
+            else:
+                node = node.right
+
+        if node:
+            node.update_stats()
+            node = self._rebalance(node)
+        return node
+
+```
+
+The deletion algorithm exploits BST properties to achieve O(log n) overlap detection. The left/right traversal pattern follows directly from the interval ordering - intervals are sorted by start time, so binary search efficiently locates overlaps. For overlapping nodes, successor replacement maintains the BST invariant by selecting min(right_subtree), preserving both the ordering property and the AVL balance. This combines interval scheduling constraints with BST deletion in a single operation.
+
+This operation is key for interval scheduling - by removing overlaps during insertion, we maintain our disjoint interval invariant. 
+
+After deletion, we split overlapping intervals into non-overlapping fragments. For each overlapping interval `[a,b]`, we create up to two new intervals: `[a,start)` if `a < start`, and `[end,b)` if `end < b`. This splitting operation preserves the maximum amount of the original intervals while maintaining our disjoint invariant.
+
+```python
+    def delete_interval(self, start: int, end: int) -> None:
+        # Find overlapping intervals
+        overlapping_nodes: List[IntervalNode] = []
+        self.root = self._delete_overlaps(self.root, start, end, overlapping_nodes)
+        # For each overlapping interval, we may need to split it
+        for node in overlapping_nodes:
+            if node.start < start:
+                # Left part remains available
+                self.root = self._insert(self.root, IntervalNode(node.start, start))
+            if node.end > end:
+                # Right part remains available
+                self.root = self._insert(self.root, IntervalNode(end, node.end))
+```
+
+## Insertion
+
+Curiously, insertion is a simpler operation than deletion. We can insert an interval `[start, end]` by simply inserting it into the tree. If the interval overlaps with any existing intervals, the tree will automatically split them as we saw in the deletion section. This again maintains our disjoint interval invariant. And preserves the inserted interval as is.
+
+```python
+  def insert_interval(self, start: int, end: int) -> None:
+        overlapping_nodes: List[IntervalNode] = []
+        self.root = self._delete_overlaps(self.root, start, end, overlapping_nodes)
+        # Merge overlapping intervals with the new interval
+        for node in overlapping_nodes:
+            start = min(start, node.start)
+            end = max(end, node.end)
+        # Insert the merged interval
+        self.root = self._insert(self.root, IntervalNode(start, end))
+```
