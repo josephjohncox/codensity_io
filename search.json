@@ -1,10 +1,10 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Joseph John Cox",
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "Articles",
     "section": "",
-    "text": "Bio\nI’m working on Operations Research and Data Science at Hadrian, where I also assist with Infrastructure, CloudOps, DevOps, and Data Infrastructure."
+    "text": "No matching items"
   },
   {
     "objectID": "projects.html",
@@ -12,5 +12,12 @@
     "title": "Projects",
     "section": "",
     "text": "Projects"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Joseph John Cox",
+    "section": "",
+    "text": "Bio\nI’m working on Operations Research and Data Science at Hadrian, where I also assist with Infrastructure, CloudOps, DevOps, and Data Infrastructure. My focus is on optimization, scheduling, and constraint programming problems. I’m particularly interested in applying category theory, optimization theory, and reinforcement learning to industrial optimization problems. I have experience with large-scale manufacturing optimization, supply chain optimization, and production scheduling.\nPreviously, I worked in semiconductor design and manufacturing, developing embedded systems, EDA tools, and compilers for automation and testing. I also worked in the supply chain space, focusing on optimization and data science for large-scale logistics problems. My background is in mathematics and physics, with deep experience in abstract algebra, distributed systems, signal processing, stochastic processes, and algorithms."
   }
 ]
