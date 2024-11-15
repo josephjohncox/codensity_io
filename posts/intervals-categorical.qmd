@@ -24,7 +24,7 @@ Our interval tree operations can be viewed through the lens of lattice theory an
 Let's consider what's happening algebraically:
 
 1. **Interval Splitting Operation**  
-   For an interval $ I = [a,b] $ and a deletion region $ D = [x,y] $, our splitting operation is effectively:
+   For an interval $I = [a,b]$ and a deletion region $D = [x,y]$, our splitting operation is effectively:
 
    $$
    \text{split}(I, D) = \begin{cases}
@@ -36,7 +36,7 @@ Let's consider what's happening algebraically:
    \end{cases}
    $$
 
-   This accounts for all possible relative positions of $ a, x, y, b $. Essentially, we remove the overlap $ I \cap D $ from $ I $ to preserve maximal non-overlapping segments. This operation forms a meet-semilattice where the meet operation $ \wedge $ is the intersection of intervals.
+   This accounts for all possible relative positions of $a, x, y, b$. Essentially, we remove the overlap $I \cap D$ from $I$ to preserve maximal non-overlapping segments. This operation forms a meet-semilattice where the meet operation $\wedge$ is the intersection of intervals.
 
    **Visualization**
    ```{.tikz}
@@ -71,15 +71,15 @@ Let's consider what's happening algebraically:
 
 
 2. **Interval Merging During Insertion**  
-   When inserting $ I = [a,b] $, we perform:
+   When inserting $I = [a,b]$, we perform:
 
    $$
    \text{merge}(I_1,\ldots,I_n,I) = [\min(a_1,\ldots,a_n,a), \max(b_1,\ldots,b_n,b)]
    $$
 
-   where $ I_1,\ldots,I_n $ are overlapping intervals. This forms a join-semilattice where the join operation $ \vee $ creates the smallest interval containing all operands.
+   where $I_1,\ldots,I_n$ are overlapping intervals. This forms a join-semilattice where the join operation $ \vee $ creates the smallest interval containing all operands.
 
-      **Visualization of Interval Merging**:
+   **Visualization of Interval Merging**:
 
    ```{.tikz}
    \begin{tikzpicture}[]
@@ -113,11 +113,11 @@ This algebraic structure ensures that:
 2. The disjoint property is preserved as an invariant.
 3. The operations are associative and commutative.
 
-This is why our seemingly complex tree operations reduce to clean algebraic manipulations on intervals, giving us confidence in their correctness and completeness.
+This is why our seemingly complex tree operations reduce to clean algebraic manipulations on intervals.
 
 ### Meet Semilattice Structure
 
-The meet operation on intervals has interesting algebraic properties. For any two intervals $ I_1 = [a_1,b_1] $ and $ I_2 = [a_2,b_2] $, their meet is:
+The meet operation on intervals has useful algebraic properties. For any two intervals $I_1 = [a_1,b_1]$ and $I_2 = [a_2,b_2]$, their meet is:
 
 $$
 I_1 \wedge I_2 = \begin{cases} 
@@ -128,11 +128,11 @@ $$
 
 This operation satisfies the semilattice axioms:
 
-1. **Idempotency**: $ I \wedge I = I $
-2. **Commutativity**: $ I_1 \wedge I_2 = I_2 \wedge I_1 $
-3. **Associativity**: $ (I_1 \wedge I_2) \wedge I_3 = I_1 \wedge (I_2 \wedge I_3) $
+1. **Idempotency**: $I \wedge I = I$
+2. **Commutativity**: $I_1 \wedge I_2 = I_2 \wedge I_1$
+3. **Associativity**: $(I_1 \wedge I_2) \wedge I_3 = I_1 \wedge (I_2 \wedge I_3)$
 
-The empty interval $ \emptyset $ acts as a bottom element: $ I \wedge \emptyset = \emptyset $ for all intervals $ I $.
+The empty interval $\emptyset$ acts as a bottom element: $I \wedge \emptyset = \emptyset$ for all intervals $I$.
 
 
 **Lattice Diagram of Meet Operation**:
@@ -150,7 +150,7 @@ The empty interval $ \emptyset $ acts as a bottom element: $ I \wedge \emptyset 
   \end{tikzpicture}
 ```
 
-This diagram represents the lattice structure where $ I_1 $ and $ I_2 $ converge to their meet $ I_1 \wedge I_2 $, and $ \emptyset $ is the bottom element.
+This diagram represents the lattice structure where $I_1$ and $I_2$ converge to their meet $I_1 \wedge I_2$, and $\emptyset$ is the bottom element.
 
 
 
@@ -164,21 +164,21 @@ This algebraic view explains why our splitting operation preserves the maximum p
 
 ### Complemented Distributive Lattice Structure
 
-Our interval operations form a complemented distributive lattice $ (L, \vee, \wedge, \overline{()}, \emptyset, \mathbb{R}) $ where:
+Our interval operations form a complemented distributive lattice $(L, \vee, \wedge, \overline{()}, \emptyset, \mathbb{R})$ where:
 
-1. **Join Operation** ($ \vee $): For overlapping intervals, creates their union:
+1. **Join Operation** ($\vee$): For overlapping intervals, creates their union:
 
    $$
    I_1 \vee I_2 = [\min(a_1,a_2), \max(b_1,b_2)]
    $$
 
-2. **Meet Operation** ( $ \wedge $ ): Creates their intersection:
+2. **Meet Operation** ( $\wedge$ ): Creates their intersection:
 
    $$
    I_1 \wedge I_2 = [\max(a_1,a_2), \min(b_1,b_2)]
    $$
 
-3. **Complement** ( $ \overline{()} $ ): For an interval $ I = [a,b] $:
+3. **Complement** ( $\overline{()}$ ): For an interval $I = [a,b]$:
 
    $$
    \overline{I} = (-\infty,a) \cup (b,\infty)
@@ -204,7 +204,7 @@ The lattice satisfies these key properties:
    I \wedge \overline{I} = \emptyset
    $$
 
-3. **Bounds**: $ \emptyset $ is the bottom element and $ \mathbb{R} $ is the top element:
+3. **Bounds**: $\emptyset$ is the bottom element and $\mathbb{R}$ is the top element:
 
    $$
    \emptyset \leq I \leq \mathbb{R} \quad \text{for all intervals } I
@@ -274,16 +274,18 @@ Let's define **Intv**, the category of intervals where:
 
 This category has interesting properties:
 
-1. **Initial Object**: $ \emptyset $ (empty interval).
-2. **Terminal Object**: $ \mathbb{R} $ (full real line).
-3. **Products**: The meet operation $ \wedge $ gives categorical products.
-4. **Coproducts**: The join operation $ \vee $ gives categorical coproducts.
+1. **Initial Object**: $\emptyset$ (empty interval).
+2. **Terminal Object**: $\mathbb{R}$ (full real line).
+3. **Products**: The meet operation $\wedge$ gives categorical products.
+4. **Coproducts**: The join operation $\vee$ gives categorical coproducts.
 
 #### Functor to Sets
 
 There's a natural functor $F: \text{Intv} \to \text{Set}$ where:
 
-$F([a,b]) = \{ x \in \mathbb{R} \mid a \leq x \leq b \}$
+$$
+F([a,b]) = \{ x \in \mathbb{R} \mid a \leq x \leq b \}
+$$
 
 This functor preserves the lattice structure and shows how our interval operations relate to set operations.
 
@@ -316,15 +318,17 @@ The coherence conditions are satisfied by the natural associativity and commutat
 
 The splitting and merging operations form a Galois connection between the lattice of intervals and the lattice of sets of intervals. Specifically, the splitting operation $\text{split}: L \to P(L)$ and the merging operation $\text{merge}: P(L) \to L$ are adjoint functors satisfying:
 
-$$ \text{split}(I) \subseteq S \quad \text{if and only if} \quad I \subseteq \text{merge}(S) $$
+$$ 
+\text{split}(I) \subseteq S \quad \text{if and only if} \quad I \subseteq \text{merge}(S) 
+$$
 
 for an interval $I$ and a set of intervals $S$. This adjunction reflects the duality between partitioning an interval into non-overlapping pieces and combining overlapping intervals into a single interval.
 
 #### Sheaf Structure
 
-The collection of intervals forms a sheaf on $ \mathbb{R} $ where:
+The collection of intervals forms a sheaf on $\mathbb{R}$ where:
 
-1. **Sections** over an open set $ U $ are the intervals contained in $ U $.
+1. **Sections** over an open set $U$ are the intervals contained in $U$.
 2. **Restriction Maps** are the natural inclusions.
 3. **Gluing** corresponds to our merge operation.
 
@@ -363,37 +367,37 @@ The sheaf structure can be visualized with open sets and sections:
 
 In this diagram:
 
-- $ s_1 $ and $ s_2 $ are sections over $ U_1 $ and $ U_2 $.
-- The restriction maps $ \rho $ connect these sections to their agreement on the overlap $ U_1 \cap U_2 $.
-- The gluing axiom allows us to form a global section $ s $ over $ U_1 \cup U_2 $.
+- $s_1$ and $s_2$ are sections over $U_1$ and $U_2$.
+- The restriction maps $\rho$ connect these sections to their agreement on the overlap $U_1 \cap U_2$.
+- The gluing axiom allows us to form a global section $s$ over $U_1 \cup U_2$.
 
 
 #### Sheaf Structure and Its Connection to Logic and Toposes
 
-The collection of intervals naturally forms a **sheaf** over the real line $ \mathbb{R} $. In topology and algebraic geometry, a sheaf formalizes the idea of data that varies continuously over a space, capturing both local and global properties.
+The collection of intervals naturally forms a **sheaf** over the real line $\mathbb{R}$. In topology and algebraic geometry, a sheaf formalizes the idea of data that varies continuously over a space, capturing both local and global properties.
 
 **Sheaf Definition in This Context:**
 
-1. **Open Covering:** Consider an open cover $ \{U_i\} $ of $ \mathbb{R} $.
-2. **Sections:** Over each open set $ U_i $, the sections are the intervals entirely contained within $ U_i $.
-3. **Restriction Maps:** For open sets $ V \subseteq U $, the restriction map $ \rho_{UV} $ takes an interval in $ U $ to itself viewed in $ V $ (since intervals are subsets of $ \mathbb{R} $).
-4. **Gluing Axiom:** If we have sections over each $ U_i $ that agree on overlaps $ U_i \cap U_j $, they can be uniquely glued together to form a global section over $ \bigcup U_i $.
+1. **Open Covering:** Consider an open cover $\{U_i\}$ of $\mathbb{R}$.
+2. **Sections:** Over each open set $U_i$, the sections are the intervals entirely contained within $U_i$.
+3. **Restriction Maps:** For open sets $V \subseteq U$, the restriction map $\rho_{UV}$ takes an interval in $U$ to itself viewed in $V$ (since intervals are subsets of $\mathbb{R}$).
+4. **Gluing Axiom:** If we have sections over each $U_i$ that agree on overlaps $U_i \cap U_j$, they can be uniquely glued together to form a global section over $\bigcup U_i$.
 
 **Connection to Logic and Toposes:**
 
 A **topos** can be thought of as a generalized space that behaves like the category of sets but has a rich internal logic. In particular, toposes provide a framework where we can perform logical reasoning in a geometric context.
 
-Our sheaf of intervals over $ \mathbb{R} $ can be seen as a **local home for logical assertions** about intervals. The intervals represent predicates about positions on the real line (e.g., "the value lies between $ a $ and $ b $"). The operations on intervals correspond to logical connectives:
+Our sheaf of intervals over $\mathbb{R}$ can be seen as a **local home for logical assertions** about intervals. The intervals represent predicates about positions on the real line (e.g., "the value lies between $a$ and $b$"). The operations on intervals correspond to logical connectives:
 
-- **Intersection ( $ \wedge $ )**: Logical conjunction ("and").
-- **Union ($ \vee $)**: Logical disjunction ("or").
-- **Complement ($ \neg $)**: Logical negation.
+- **Intersection ( $\wedge$ )**: Logical conjunction ("and").
+- **Union ( $\vee$ )**: Logical disjunction ("or").
+- **Complement ( $\neg$ )**: Logical negation.
 
 In the language of topos theory:
 
-1. **Subobject Classifier:** Intervals can be seen as subobjects of $ \mathbb{R} $, and the structure of intervals aligns with the subobject classifier in a topos.
+1. **Subobject Classifier:** Intervals can be seen as subobjects of $\mathbb{R}$, and the structure of intervals aligns with the subobject classifier in a topos.
 2. **Internal Logic:** The interval operations form a Heyting algebra, particularly when considering open intervals and the intuitionistic logic inherent in topos theory. This aligns with the internal logic of a topos, which does not presume the law of excluded middle.
-3. **Grothendieck Topology:** The open sets of $ \mathbb{R} $ form a basis for a Grothendieck topology, over which our sheaf of intervals is defined.
+3. **Grothendieck Topology:** The open sets of $\mathbb{R}$ form a basis for a Grothendieck topology, over which our sheaf of intervals is defined.
 
 **Implications for Our Interval Tree:**
 
